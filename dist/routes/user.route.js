@@ -14,15 +14,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_controller_1 = require("../controllers/user.controller");
 const joi_1 = __importDefault(require("joi"));
+const logging_colorify_1 = require("logging-colorify");
 const UserRoutes = [
     {
         method: 'POST',
         path: '/signup',
         handler: (req, h) => __awaiter(void 0, void 0, void 0, function* () {
+            // console.log("----->>>>>", req.info.remoteAddress);
+            let stime = new Date();
+            (0, logging_colorify_1.logError)("this error in signup");
             let payload = req.payload;
-            console.log("In signup ", req);
+            // console.log("In signup ", req)
             let responseData = yield user_controller_1.UserOperation.userSignUp(payload);
             console.log(" responseData in signup ", responseData);
+            yield (0, logging_colorify_1.createApiLogger)(req, stime);
             return responseData;
         }),
         options: {

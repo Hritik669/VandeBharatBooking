@@ -40,6 +40,7 @@ const connection_1 = require("./core/connection");
 const dotenv = __importStar(require("dotenv"));
 const index_route_1 = require("./routes/index.route");
 const authUser_1 = __importDefault(require("./middleware/authUser"));
+const logging_colorify_1 = require("logging-colorify");
 dotenv.config();
 class Init {
     static hapiserver() {
@@ -50,6 +51,7 @@ class Init {
             });
             yield (0, connection_1.connectToDatabase)();
             yield server.register(authUser_1.default);
+            (0, logging_colorify_1.logError)("this is the error");
             server.route(index_route_1.routes);
             yield server.start();
             console.log(`Server running on ${server.info.uri}`);

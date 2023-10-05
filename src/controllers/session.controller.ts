@@ -1,34 +1,30 @@
-import { Request, ResponseToolkit } from '@hapi/hapi';
 import { SessionModel } from '../models/session.model';
-import { Response } from '../core/response';
+import { Response } from '../const/response';
 
-export class Sessions{
-  static async sessionEntry(device: string, user: any, userSession: any) {
+export class Sessions {
+  static async sessionEntry(device: string, user, userSession) {
     try {
-      if (user) {
-        if (!userSession) {
-          const session_details = new SessionModel({
-            user_id: user.id,
-            device_id: device,
-            status: true
-          });
-          const session = await session_details.save();
-          console.log("Session stored successfully");
-          console.log(session);
-        } else if (userSession) {
-          if (!userSession.status) {
-            await SessionModel.findOneAndUpdate({ user_id: user.id }, { status: !userSession.status });
-            console.log("Session Activate");
-          }
-        }
-      } else {
+      if (!user) {
         console.log("User not found");
-        return Response.sendResponse("User Not Found",404,{});
+        return Response.sendResponse("User Not Found", 404, {});
+      }
+
+      if (!userSession) {
+        const sessionDetails = new SessionModel({
+          user_id: user.id,
+          device_id: device,
+          status: true
+        });
+        const session = await sessionDetails.save();
+        console.log("Session stored successfully");
+        console.log(session);
+      } else if (!userSession.status) {
+        await SessionModel.findOneAndUpdate({ user_id: user.id }, { status: true });
+        console.log("Session Activate");
       }
     } catch (err) {
-      console.log("Server Error", err);
-      return Response.sendResponse("Server Error",500,{});
+      console.error("Server Error", err);
+      return Response.sendResponse("Server Error", 500, {});
     }
   }
 }
-
